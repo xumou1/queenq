@@ -1,0 +1,133 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Pandas Library Usage Specifications
+
+## 1. Introduction
+This document provides guidelines for using the Pandas library in this project. Consistent and efficient use of Pandas is crucial for data manipulation and analysis.
+
+## 2. General Best Practices
+-   **Import Convention:** Import Pandas with the conventional alias `pd`:
+    ```python
+    import pandas as pd
+    ```
+-   **Avoid Loops:** Whenever possible, use vectorized operations provided by Pandas/NumPy instead of iterating over DataFrame rows. This is significantly more performant.
+    -   **Bad:**
+        ```python
+        for index, row in df.iterrows():
+            df.loc[index, 'new_column'] = row['old_column'] * 2
+        ```
+    -   **Good:**
+        ```python
+        df['new_column'] = df['old_column'] * 2
+        ```
+-   **Method Chaining:** Use method chaining for a sequence of operations to improve readability, but break long chains into multiple lines for clarity.
+    ```python
+    processed_df = (
+        df.dropna(subset=['critical_column'])
+          .assign(normalized_value=lambda x: x['value'] / x['value'].max())
+          .query('category == "A"')
+          .sort_values(by='date_column')
+    )
+    ```
+-   **Copy vs. View:** Be mindful of Pandas' `SettingWithCopyWarning`. When modifying a slice of a DataFrame, explicitly use `.copy()` if you intend to create a new DataFrame and modify it, or ensure you are operating on the original DataFrame if intended.
+    ```python
+    # To avoid SettingWithCopyWarning when modifying a slice
+    subset_df = df[df['column_a'] > 10].copy()
+    subset_df['new_col'] = 'some_value'
+    ```
+
+## 3. Data Loading and Saving
+-   **`read_csv()`:**
+    -   Explicitly specify `dtype` for columns where possible to ensure correct data types and optimize memory.
+    -   Use `parse_dates` for date columns.
+    -   Consider `usecols` to load only necessary columns.
+    -   For large files, use the `chunksize` parameter for iterative processing.
+    ```python
+    df_suppliers = pd.read_csv(
+        'data/raw/suppliers.csv',
+        dtype={'supplier_id': str, 'purchase_amount': float},
+        parse_dates=['transaction_date']
+    )
+    ```
+-   **Saving Data:**
+    -   When saving to CSV with `to_csv()`, typically set `index=False` unless the index contains meaningful data.
+    -   Specify encoding, e.g., `encoding='utf-8'`.
+
+## 4. Data Selection and Indexing
+-   **`.loc[]`:** Prefer `.loc[]` for label-based indexing and selection.
+    ```python
+    # Select rows where 'country' is 'USA' and columns 'name' and 'revenue'
+    df.loc[df['country'] == 'USA', ['name', 'revenue']]
+    ```
+-   **`.iloc[]`:** Use `.iloc[]` for integer position-based indexing.
+    ```python
+    # Select first 5 rows and first 3 columns
+    df.iloc[:5, :3]
+    ```
+-   **Avoid chained indexing for assignment:**
+    -   **Bad:** `df[df['column_a'] > 10]['column_b'] = value` (may result in `SettingWithCopyWarning` and unpredictable behavior).
+    -   **Good:** `df.loc[df['column_a'] > 10, 'column_b'] = value`
+
+## 5. Data Cleaning
+-   **Handling Missing Values (`NaN`):**
+    -   Use `isnull()` or `isna()` to detect missing values.
+    -   Use `dropna()` to remove rows/columns with missing values.
+    -   Use `fillna()` to impute missing values (e.g., with mean, median, mode, or a constant). Be clear about the imputation strategy.
+-   **Removing Duplicates:** Use `duplicated()` and `drop_duplicates()`. Specify `subset` and `keep` parameters as needed.
+
+## 6. Data Transformation
+-   **`assign()`:** Use `assign()` to create new columns, especially in method chains.
+    ```python
+    df = df.assign(
+        col_c = df['col_a'] + df['col_b'],
+        col_d = lambda x: x['col_c'] * 2
+    )
+    ```
+-   **`apply()`:** Use `apply()` for row-wise or column-wise operations that cannot be easily vectorized. Note that `apply()` can be slow for large DataFrames.
+-   **`map()` and `applymap()`:**
+    -   `map()`: for element-wise transformation on a Series.
+    -   `applymap()`: for element-wise transformation on a DataFrame.
+
+## 7. Grouping and Aggregation
+-   **`groupby()`:** Use `groupby()` for splitting data into groups, applying a function, and combining results.
+    ```python
+    # Calculate total purchase amount per supplier
+    supplier_totals = df_purchases.groupby('supplier_name')['purchase_amount'].sum()
+    ```
+-   **`agg()` and `aggregate()`:** Use for applying multiple aggregation functions.
+    ```python
+    stats = df.groupby('category').agg(
+        avg_price=('price', 'mean'),
+        total_quantity=('quantity', 'sum'),
+        num_unique_products=('product_id', 'nunique')
+    )
+    ```
+
+## 8. Merging and Joining DataFrames
+-   Use `pd.merge()` for SQL-like joins. Specify `on`, `left_on`, `right_on`, and `how` (e.g., `inner`, `left`, `right`, `outer`) parameters clearly.
+    ```python
+    merged_df = pd.merge(
+        df_suppliers,
+        df_company_info,
+        left_on='supplier_id',
+        right_on='company_id',
+        how='left'
+    )
+    ```
+-   Use `pd.concat()` for stacking DataFrames vertically or horizontally.
+-   Use `join()` for index-based merges.
+
+## 9. Performance
+-   **Categorical Data:** Convert columns with a limited number of unique string values to the `Categorical` dtype to save memory and speed up operations like `groupby()`.
+    ```python
+    df['category_column'] = df['category_column'].astype('category')
+    ```
+-   **Memory Usage:** Use `df.info(memory_usage='deep')` to inspect memory usage.
+-   Consider libraries like `NumPy` for purely numerical operations if performance is critical and Pandas overhead is an issue.
+
+## 10. Readability
+-   Use descriptive variable names for DataFrames and Series.
+-   Comment complex operations or non-obvious logic.

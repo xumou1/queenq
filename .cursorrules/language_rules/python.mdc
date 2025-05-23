@@ -1,0 +1,133 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Python Coding Specifications
+
+## 1. Introduction
+This document outlines the Python coding standards for the project, largely based on **PEP 8 -- Style Guide for Python Code**. Adherence ensures code readability, consistency, and maintainability.
+
+## 2. Code Layout
+-   **Indentation:** Use 4 spaces per indentation level. Do not use tabs.
+-   **Line Length:** Limit all lines to a maximum of 100 characters.
+-   **Blank Lines:**
+    -   Use two blank lines to separate top-level function and class definitions.
+    -   Use one blank line to separate method definitions inside a class.
+    -   Use blank lines sparingly inside functions to show logical sections.
+-   **Source File Encoding:** Use UTF-8 for all Python source files. Add `# -*- coding: utf-8 -*-` at the top if necessary, though it's default in Python 3.
+
+## 3. Imports
+-   Imports should usually be on separate lines:
+    ```python
+    # Correct:
+    import os
+    import sys
+
+    # Wrong:
+    import os, sys
+    ```
+-   Imports are always put at the top of the file, just after any module comments and docstrings, and before module globals and constants.
+-   Imports should be grouped in the following order:
+    1.  Standard library imports (e.g., `os`, `sys`).
+    2.  Related third-party imports (e.g., `pandas`, `networkx`).
+    3.  Local application/library specific imports.
+    -   Put a blank line between each group of imports.
+-   Use absolute imports where possible. For example, `from my_package.my_module import my_class`.
+-   Avoid `from module import *` except for specific cases like internal helper modules.
+
+## 4. Naming Conventions
+-   **Modules:** Short, `all_lowercase`, and `snake_case` names. (e.g., `data_loader.py`).
+-   **Packages:** Short, `all_lowercase` names. Underscores are discouraged.
+-   **Classes:** `PascalCase` (e.g., `SupplyChainNode`).
+-   **Functions & Methods:** `snake_case` (e.g., `calculate_revenue`).
+-   **Variables:** `snake_case` (e.g., `supplier_id`).
+-   **Constants:** `UPPER_SNAKE_CASE` (e.g., `MAX_PURCHASE_AMOUNT`).
+-   **Function and method arguments:**
+    -   Use `self` for the first argument to instance methods.
+    -   Use `cls` for the first argument to class methods.
+-   Avoid single-character names except for counters or iterators in short loops (e.g., `i`, `j`, `k`, `x`).
+
+## 5. Comments
+-   **Docstrings:**
+    -   Write docstrings for all public modules, functions, classes, and methods. Follow **PEP 257 -- Docstring Conventions**.
+    -   Use `"""triple double quotes"""` for docstrings.
+    -   For one-liner docstrings, keep the quotes on the same line.
+    -   Example:
+        ```python
+        def fetch_data(source_url: str) -> str:
+            """Fetches data from the given URL.
+
+            Args:
+                source_url: The URL to fetch data from.
+
+            Returns:
+                The content retrieved from the URL as a string.
+
+            Raises:
+                ConnectionError: If there is an issue connecting to the URL.
+            """
+            # ... implementation ...
+        ```
+-   **Inline Comments:**
+    -   Use inline comments sparingly.
+    -   Start inline comments with `#` and a single space.
+    -   Write comments on their own line if they explain a block of code.
+
+## 6. Type Hinting (PEP 484)
+-   Use type hints for function signatures (arguments and return values) and important variables.
+-   This improves code readability and allows for static analysis.
+-   Example:
+    ```python
+    from typing import List, Dict
+
+    def process_suppliers(supplier_data: List[Dict[str, any]]) -> Dict[str, float]:
+        # ... implementation ...
+        pass
+    ```
+
+## 7. String Formatting
+-   Prefer f-strings (formatted string literals) for string formatting (Python 3.6+).
+    ```python
+    name = "Acme Corp"
+    amount = 1000
+    message = f"Supplier: {name}, Amount: ${amount:.2f}"
+    ```
+-   Use `.format()` for Python versions < 3.6 or if f-strings are not suitable.
+-   Avoid using the `%` operator for string formatting.
+
+## 8. Error Handling
+-   Use specific exceptions rather than generic `Exception`.
+-   Handle exceptions gracefully. Provide informative error messages.
+-   Use `try...except...else...finally` blocks appropriately.
+
+## 9. Whitespace in Expressions and Statements
+-   Avoid extraneous whitespace.
+-   Surround binary operators with a single space on either side: `x = y + z`.
+-   No space immediately inside parentheses, brackets, or braces: `my_list[0]`, `my_function(arg1, arg2)`.
+-   No space before a comma, semicolon, or colon. Space after a comma, semicolon, or colon (unless at the end of the line).
+
+## 10. Linting and Formatting Tools
+-   Use **Flake8** for linting (checking for PEP 8 compliance and logical errors).
+-   Use **Black** or **autopep8** for automatic code formatting to ensure consistency.
+-   Configure your editor or IDE to use these tools.
+
+## 11. Best Practices
+-   **Virtual Environments:** Always use virtual environments (e.g., `venv`, `conda`) for project dependencies.
+-   **`requirements.txt`:** Maintain a `requirements.txt` file for project dependencies (`pip freeze > requirements.txt`).
+-   **Avoid mutable default arguments:**
+    ```python
+    # Bad
+    def foo(a, b=[]):
+        b.append(a)
+        return b
+
+    # Good
+    def foo(a, b=None):
+        if b is None:
+            b = []
+        b.append(a)
+        return b
+    ```
+-   Write idiomatic Python (Pythonic code).
+-   Follow the Zen of Python (`import this`).

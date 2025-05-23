@@ -1,0 +1,59 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Data Handling and CSV Specifications
+
+## 1. Introduction
+This document outlines specifications for handling data, particularly CSV files, within the supply chain network research project. Consistency in data processing is key for accurate analysis.
+
+## 2. CSV File Format
+-   **Encoding:** All CSV files should be **UTF-8** encoded.
+-   **Delimiter:** Use a comma (`,`) as the delimiter. If other delimiters are present in source files, they must be explicitly handled during ingestion.
+-   **Quoting:** Fields containing commas, newlines, or double quotes should be enclosed in double quotes (`"`). Double quotes within a quoted field should be escaped by preceding them with another double quote (e.g., `"Company ""X"" Inc."`).
+-   **Header Row:**
+    -   The first row of every CSV file must be a header row containing column names.
+    -   Column names should be clear, descriptive, and use `snake_case` (e.g., `supplier_id`, `purchase_amount`, `customer_name`).
+    -   Avoid spaces or special characters (other than underscore) in header names.
+-   **Line Endings:** Use Unix-style line endings (LF - `\n`). Convert CRLF (`\r\n`) if necessary during processing.
+-   **Empty Values:** Represent missing or empty values consistently (e.g., as an empty string `""` or a specific placeholder like `NA` if universally agreed upon and handled). Avoid `null` or `None` strings unless explicitly defined as such. Python's `None` will be used internally by Pandas for missing numerical data (`NaN`) or object data (`None` or `NaT`).
+
+## 3. Data Types and Cleaning
+-   **Schema Definition:**
+    -   For each type of CSV (supplier data, customer data, company info), define an expected schema including column names and their expected data types (e.g., string, integer, float, date).
+    -   Document these schemas.
+-   **Data Type Conversion:**
+    -   Explicitly convert columns to their correct data types upon loading (e.g., using Pandas `dtype` parameter or `astype()` method).
+    -   Handle potential conversion errors gracefully (e.g., log errors, replace with `NaN`).
+-   **Monetary Values (`采购额`, `收入`):**
+    -   Store monetary values as numerical types (float or decimal, depending on precision requirements).
+    -   Ensure consistency in currency. If multiple currencies exist, include a currency column and convert to a single common currency for analysis. Document the source and conversion rates used.
+-   **Company/Supplier/Customer Names:**
+    -   Normalize names to ensure consistency and avoid duplication due to minor variations (e.g., "Acme Corp" vs "Acme Corporation").
+    -   Consider techniques like lowercasing, removing punctuation, and stripping leading/trailing whitespace.
+    -   Implement a strategy for handling aliases or parent-subsidiary relationships if relevant to the network.
+-   **Date Fields:**
+    -   Use a consistent date format (e.g., `YYYY-MM-DD`).
+    -   Parse date strings into datetime objects during data loading.
+
+## 4. Data Validation
+-   Implement checks to validate data upon loading:
+    -   Verify the presence of all expected columns.
+    -   Check for unexpected `NULL` or missing values in critical columns.
+    -   Validate ranges or allowed values for certain fields (e.g., purchase amounts should be positive).
+-   Log any validation errors or discrepancies. Decide on a strategy for handling invalid records (e.g., skip, flag, attempt to correct).
+
+## 5. File Naming and Organization
+-   **Input Data:** Store raw input CSV files in a dedicated directory (e.g., `data/raw/`).
+-   **Processed Data:** Store cleaned and processed data (e.g., intermediate CSVs or other formats) in a separate directory (e.g., `data/processed/`).
+-   Use descriptive file names that include the source and date if relevant (e.g., `supplier_purchases_2023.csv`, `company_info_master.csv`).
+
+## 6. Large Files
+-   If CSV files are very large, consider using chunking techniques during processing to manage memory usage (e.g., Pandas `read_csv` with `chunksize`).
+-   Alternative data formats like Parquet might be considered for processed data if performance becomes an issue.
+
+## 7. Documentation
+-   Document the source of each dataset.
+-   Document any cleaning, transformation, or normalization steps applied to the data.
+-   Record any assumptions made about the data.

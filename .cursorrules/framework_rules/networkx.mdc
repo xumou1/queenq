@@ -1,0 +1,91 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# NetworkX Library Usage Specifications
+
+## 1. Introduction
+This document provides guidelines for using the NetworkX library for creating, manipulating, and analyzing supply chain networks in this project.
+
+## 2. General Best Practices
+-   **Import Convention:** Import NetworkX with the conventional alias `nx`:
+    ```python
+    import networkx as nx
+    ```
+-   **Graph Types:**
+    -   Choose the appropriate graph type for your network:
+        -   `nx.Graph()`: For undirected graphs (e.g., relationships where direction doesn't matter).
+        -   `nx.DiGraph()`: For directed graphs (e.g., supplier -> company -> customer relationships, representing flow of goods/money). This is likely the most relevant for supply chain networks.
+        -   `nx.MultiGraph()`, `nx.MultiDiGraph()`: If multiple edges (relationships) can exist between the same two nodes.
+    -   Document the choice of graph type and the reasoning.
+
+## 3. Node and Edge Representation
+-   **Nodes:**
+    -   Nodes can be any hashable Python object. For this project, use meaningful identifiers for nodes (e.g., company names, unique IDs).
+    -   Store node attributes (e.g., company type, location, total revenue/procurement) directly on the nodes:
+        ```python
+        G = nx.DiGraph()
+        G.add_node("SupplierA", type="supplier", location="CityX")
+        G.add_node("上市公司1", type="manufacturer", industry="Tech")
+        ```
+-   **Edges:**
+    -   Represent relationships (e.g., supplier-customer transaction, ownership).
+    -   Store edge attributes to quantify or describe the relationship (e.g., purchase amount, transaction volume, contract duration):
+        ```python
+        G.add_edge("SupplierA", "上市公司1", purchase_amount=500000, product_category="Components")
+        G.add_edge("上市公司1", "CustomerX", revenue_generated=1200000)
+        ```
+    -   For weighted graphs (e.g., using purchase amounts as weights), clearly define the weight attribute.
+
+## 4. Building the Network
+-   **Iterative Construction:** Build the graph by iterating through your data sources (supplier CSV, customer CSV).
+-   **Data Consistency:** Ensure node identifiers are consistent across different data sources before adding them to the graph to correctly link entities. Normalize names if necessary.
+-   **Handling Duplicates:** Decide how to handle duplicate relationships if they appear in the data (e.g., aggregate amounts, take the latest, or use `MultiGraph` if distinct interactions are important).
+
+## 5. Network Analysis
+-   **Centrality Measures:** Utilize appropriate centrality measures to identify key players:
+    -   `nx.degree_centrality(G)`
+    -   `nx.in_degree_centrality(G)` / `nx.out_degree_centrality(G)` (for DiGraphs)
+    -   `nx.betweenness_centrality(G)`
+    -   `nx.eigenvector_centrality(G)`
+    -   `nx.closeness_centrality(G)`
+    -   Document which measures are used and why they are relevant to your research questions.
+-   **Paths and Connectivity:**
+    -   `nx.shortest_path(G, source, target)`
+    -   `nx.is_connected(G)` (for undirected), `nx.is_strongly_connected(G)`, `nx.is_weakly_connected(G)` (for directed)
+    -   `nx.connected_components(G)`, `nx.strongly_connected_components(G)`, `nx.weakly_connected_components(G)`
+-   **Community Detection:** If relevant, explore algorithms for detecting communities or clusters within the network (e.g., `nx.community.greedy_modularity_communities`).
+-   **Cycles:** Detect cycles if relevant (e.g., `nx.simple_cycles(G)` for DiGraphs).
+
+## 6. Visualization (Basic)
+-   NetworkX provides basic drawing capabilities with Matplotlib (`nx.draw()`, `nx.draw_networkx()`).
+-   For more advanced or interactive visualizations, consider exporting graph data to tools like Gephi (e.g., via GEXF format) or using libraries like Plotly Dash, Bokeh, or Cytoscape.js.
+    ```python
+    import matplotlib.pyplot as plt
+
+    # Basic drawing
+    # pos = nx.spring_layout(G) # Compute layout
+    # nx.draw(G, pos, with_labels=True, node_size=500, font_size=8)
+    # edge_labels = nx.get_edge_attributes(G, 'purchase_amount')
+    # nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
+    # plt.show()
+    ```
+-   Label nodes and edges clearly in visualizations.
+-   Use node size, color, or shape to represent node attributes. Use edge width or color for edge attributes.
+
+## 7. Data Export
+-   Export graph data for use in other tools or for archival:
+    -   Adjacency list: `nx.write_adjlist(G, "graph.adjlist")`
+    -   Edge list: `nx.write_edgelist(G, "graph.edgelist")`
+    -   GEXF (for Gephi): `nx.write_gexf(G, "graph.gexf")`
+    -   GraphML: `nx.write_graphml(G, "graph.graphml")`
+
+## 8. Performance
+-   For very large graphs, be mindful of the performance of certain algorithms. NetworkX is implemented in Python, so for extremely large-scale analysis, specialized graph databases or libraries (e.g., graph-tool, igraph if Python bindings are used, or distributed graph processing systems) might be considered, though NetworkX is excellent for many research scenarios.
+-   Use efficient data structures for node/edge attributes.
+
+## 9. Documentation
+-   Clearly document the meaning of nodes, edges, and their attributes.
+-   Document the specific NetworkX functions and algorithms used and their parameters.
+-   Explain the interpretation of the analysis results in the context of the supply chain network.

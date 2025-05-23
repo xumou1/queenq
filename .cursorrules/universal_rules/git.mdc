@@ -1,0 +1,143 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Git Commit Specifications
+
+## 1. Introduction
+This document defines the standard format and conventions for Git commit messages within this project. Adhering to these guidelines is crucial for maintaining a clean, understandable, and navigable project history. This facilitates collaboration, code reviews, and automated changelog generation.
+
+## 2. Commit Message Format
+Every commit message must follow a specific structure consisting of a **header**, an optional **body**, and an optional **footer**.
+
+```
+<type>(<scope>): <subject>
+<BLANK LINE>
+<body>
+<BLANK LINE>
+<footer>
+```
+
+### 2.1. Header
+
+The header is mandatory and must conform to the `<type>(<scope>): <subject>` format.
+
+#### 2.1.1. `<type>`
+
+This describes the kind of change that the commit is providing. The allowed types are:
+
+  * **`feat`**: A new feature or user-facing enhancement.
+  * **`fix`**: A bug fix in the codebase.
+  * **`docs`**: Changes to documentation only (e.g., README, comments, docstrings).
+  * **`style`**: Code style changes that do not affect the meaning or functionality of the code (e.g., white-space, formatting, missing semi-colons, linting fixes).
+  * **`refactor`**: A code change that neither fixes a bug nor adds a feature, but improves code structure, readability, or performance without changing its external behavior.
+  * **`perf`**: A code change that specifically improves performance.
+  * **`test`**: Adding new tests, refactoring existing tests, or correcting existing tests. No production code changes.
+  * **`build`**: Changes that affect the build system, CI/CD pipeline, or external dependencies (e.g., updating package versions, Dockerfile changes).
+  * **`ci`**: Changes to CI configuration files and scripts (e.g., GitHub Actions, Jenkins).
+  * **`chore`**: Routine tasks, maintenance, or other changes that don't modify `src` or `test` files (e.g., updating `.gitignore`, project configuration files).
+  * **`revert`**: Reverting a previous commit. The subject should be `Revert "<original commit subject>"`.
+
+#### 2.1.2. `(<scope>)` (Optional)
+
+The scope provides additional contextual information about the part of the codebase affected by the change. It should be a noun and enclosed in parentheses.
+
+  * Choose a scope that is specific and relevant to the change.
+  * Examples: `data-ingestion`, `network-analysis`, `api`, `ui`, `config`, `supplier-module`, `customer-data`.
+  * If the change is widespread or not specific to a single component, the scope can be omitted.
+
+#### 2.1.3. `<subject>`
+
+The subject contains a concise description of the change:
+
+  * Use the imperative mood, present tense (e.g., "add feature" not "added feature" or "adds feature").
+  * Do not capitalize the first letter.
+  * Do not end the subject line with a period (`.`).
+  * Keep the subject line to 50 characters or less to ensure readability in Git logs.
+
+### 2.2. Body (Optional)
+
+  * The body is used to provide additional context, explain the "what" and "why" of the change, and contrast it with previous behavior.
+  * It should be separated from the header by a blank line.
+  * Use the imperative mood, present tense.
+  * Wrap lines at 72 characters to ensure readability in various Git tools.
+  * Explain complex logic, assumptions, or design choices if necessary.
+
+### 2.3. Footer (Optional)
+
+  * The footer is used to reference issue tracker IDs and to note any **BREAKING CHANGES**.
+  * It should be separated from the body by a blank line.
+
+#### 2.3.1. Referencing Issues
+
+  * Prefix issue references with keywords like `Closes`, `Fixes`, `Resolves`.
+  * Example: `Closes #123`, `Fixes JIRA-456`.
+  * Multiple issues can be referenced, each on a new line.
+
+#### 2.3.2. Breaking Changes
+
+  * A breaking change MUST be indicated at the very beginning of the footer section.
+  * Start with the uppercase text `BREAKING CHANGE:`, followed by a space or two newlines.
+  * The remainder of the commit message is then the description of the breaking change, justification, and migration instructions.
+  * Example:
+    ```
+    BREAKING CHANGE: The `process_data` function now requires a `config`
+    parameter. Users must update their function calls to include this
+    new parameter, which specifies the data processing mode.
+    ```
+
+## 3. Example Commit Messages
+
+### Example 1: Feature with Scope
+
+```
+feat(supplier-module): add support for XML data import
+
+Users can now import supplier data from XML files in addition to CSV.
+This enhances flexibility for integrating with legacy supplier systems.
+The new parser handles common XML structures and can be configured
+via the `config.ini` file.
+
+Closes #78
+```
+
+### Example 2: Fix without Scope
+
+```
+fix: correct calculation error in total purchase aggregation
+
+The previous logic was double-counting certain discounted items, leading
+to inflated total purchase values. This commit corrects the aggregation
+formula.
+
+Resolves #102
+```
+
+### Example 3: Documentation Change
+
+```
+docs(readme): update installation instructions for Windows users
+```
+
+### Example 4: Commit with Breaking Change
+
+```
+refactor(api): rename `get_supplier_details` endpoint to `fetch_supplier_info`
+
+The endpoint name has been updated for better clarity and consistency
+with other API endpoints.
+
+BREAKING CHANGE: The API endpoint `/api/v1/get_supplier_details`
+has been renamed to `/api/v1/fetch_supplier_info`.
+All client integrations must be updated to use the new endpoint URL.
+```
+
+## 4. General Guidelines
+
+  * **Atomic Commits:** Each commit should represent a single logical change. Avoid bundling unrelated changes into one commit.
+  * **Clarity and Conciseness:** Write commit messages that are easy to understand.
+  * **Test Before Committing:** Ensure your changes are tested and do not break existing functionality.
+  * **Review Commits:** Before pushing, review your commit messages for adherence to these standards.
+  * **No Commented Code:** Do not commit commented-out code. Remove it or use version control to track previous states.
+  * **Meaningful History:** Strive to create a commit history that is a valuable resource for understanding the project's evolution.

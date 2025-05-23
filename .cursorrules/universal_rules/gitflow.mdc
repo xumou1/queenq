@@ -1,0 +1,77 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Gitflow Workflow Specifications
+
+## 1. Introduction
+This document outlines the Gitflow workflow to be used for this project. Gitflow is a branching model designed to help manage complex projects by defining a strict branching model.
+
+## 2. Main Branches
+The repository will hold two main branches with an infinite lifetime:
+
+-   🌲 **`main` (or `master`)**:
+    -   This branch stores the official release history.
+    -   It should always reflect a production-ready state.
+    -   Direct commits to `main` are forbidden. Merges to `main` happen only from `release` branches or `hotfix` branches.
+    -   All commits on `main` should be tagged with a version number.
+
+-   🌿 **`develop`**:
+    -   This branch serves as an integration branch for features.
+    -   It reflects the latest delivered development changes for the next release.
+    -   Daily development work is merged into `develop`.
+    -   This branch should also be kept stable, but it's where automated nightly builds (if any) are typically built from.
+
+## 3. Supporting Branches
+Alongside the main branches, we use a variety of supporting branches to aid parallel development between team members, ease tracking of features, prepare for production releases, and assist in quickly fixing live production problems. Unlike the main branches, these branches always have a limited lifetime, since they will be removed eventually after being merged.
+
+The different types of branches we may use are:
+
+### 3.1. Feature Branches ( `feature/*` or `feat/*` )
+-   **May branch off from:** `develop`
+-   **Must merge back into:** `develop`
+-   **Naming convention:** `feature/<feature-name>` or `feature/<issue-number>-<feature-name>` (e.g., `feature/add-supplier-parsing`, `feat/JIRA-123-network-visualization`)
+-   **Purpose:** Used to develop new features for the upcoming or a distant future release.
+-   Feature branches are typically kept in the developer's local repository and not pushed to the central repository unless collaboration is needed.
+
+### 3.2. Release Branches ( `release/*` )
+-   **May branch off from:** `develop`
+-   **Must merge back into:** `develop` and `main`
+-   **Naming convention:** `release/<version-number>` (e.g., `release/v1.0.0`, `release/0.2.0-beta`)
+-   **Purpose:** Used to prepare for a new production release. Allows for last-minute dotting of i’s and crossing of t’s. This is where final testing, documentation generation, and other release-specific tasks occur.
+-   No new features should be added to a release branch; only bug fixes, documentation generation, and other release-oriented tasks.
+-   Once ready, the release branch is merged into `main` and tagged with a version number. It should also be merged back into `develop` to reflect any changes made during the release.
+
+### 3.3. Hotfix Branches ( `hotfix/*` )
+-   **May branch off from:** `main`
+-   **Must merge back into:** `develop` and `main`
+-   **Naming convention:** `hotfix/<hotfix-name>` or `hotfix/<version-number>` (e.g., `hotfix/fix-critical-data-error`, `hotfix/v1.0.1`)
+-   **Purpose:** Used to quickly patch production releases. These arise from the necessity to act immediately upon an undesired state of a live production version.
+-   When a hotfix is complete, it must be merged back into `main` (and tagged) and also into `develop` (or the current `release` branch if one exists) to ensure the fix is included in future development.
+
+## 4. Workflow Summary
+1.  **Initialization:** Create `main` and `develop` branches.
+2.  **Feature Development:**
+    -   Create a `feature/*` branch from `develop`.
+    -   Develop the feature and commit changes.
+    -   Once complete, merge the `feature/*` branch back into `develop`.
+    -   Delete the local and remote `feature/*` branch.
+3.  **Release Preparation:**
+    -   Create a `release/*` branch from `develop` when `develop` is feature-complete for a release.
+    -   Perform final testing, bug fixing, and documentation on the `release/*` branch.
+    -   Once the release is ready:
+        -   Merge `release/*` into `main` and tag the commit with a version number.
+        -   Merge `release/*` back into `develop`.
+        -   Delete the `release/*` branch.
+4.  **Hotfix:**
+    -   Create a `hotfix/*` branch from `main`.
+    -   Fix the bug and commit changes.
+    -   Merge `hotfix/*` into `main` and tag the commit.
+    -   Merge `hotfix/*` back into `develop` (or the active `release/*` branch).
+    -   Delete the `hotfix/*` branch.
+
+## 5. Pull Requests
+-   All merges into `develop` and `main` (via `release` or `hotfix` branches) should be done through Pull Requests (PRs).
+-   PRs should be reviewed by at least one other team member.
+-   Ensure all tests pass and there are no merge conflicts before merging a PR.

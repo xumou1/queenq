@@ -1,0 +1,54 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# General Development Specifications
+
+## 1. Introduction
+This document outlines the general development standards and practices to be followed throughout the project. Adherence to these guidelines will ensure consistency, readability, and maintainability of the codebase.
+
+## 2. Naming Conventions
+-   **Variables & Functions:** Use `snake_case` (e.g., `supplier_name`, `calculate_total_purchase`).
+-   **Classes:** Use `PascalCase` (e.g., `SupplyChainNetwork`, `CompanyNode`).
+-   **Constants:** Use `UPPER_SNAKE_CASE` (e.g., `MAX_CONNECTIONS`, `DEFAULT_CURRENCY`).
+-   **Files & Directories:** Use `kebab-case` or `snake_case` (e.g., `data-loader.py`, `utility_scripts`). Prefer consistency.
+
+## 3. Code Formatting
+-   **Indentation:** Use 4 spaces for indentation. Do not use tabs.
+-   **Line Length:** Maximum line length should be 100 characters.
+-   **Blank Lines:** Use blank lines sparingly to separate logical blocks of code.
+-   **Comments:**
+    -   Write clear and concise comments to explain complex logic, assumptions, or non-obvious code sections.
+    -   Use `#` for single-line comments and `"""Docstrings"""` for multi-line comments and function/class documentation.
+
+## 4. Error Handling
+-   Implement robust error handling for all critical operations (e.g., file I/O, data parsing, API calls).
+-   Use specific exception types where possible.
+-   Log errors effectively with sufficient context for debugging.
+
+## 5. Modularity
+-   Break down complex tasks into smaller, manageable functions or modules.
+-   Strive for high cohesion within modules and low coupling between them.
+
+## 6. Testing
+-   Write unit tests for critical functions and modules.
+-   Aim for good test coverage.
+-   Ensure tests are repeatable and independent.
+
+## 7. Configuration Management
+-   Store configuration parameters (e.g., file paths, API keys) separately from the code (e.g., in `.env` files or configuration files).
+-   Do not commit sensitive information to the version control system.
+
+## 8. Version Control
+-   Follow the Git workflow outlined in `git.mdc` and `gitflow.mdc`.
+-   Write meaningful commit messages.
+
+## 9. Dependencies
+-   Manage project dependencies using a `requirements.txt` file or a dependency management tool like Poetry or Conda.
+-   Keep dependencies updated and regularly review for security vulnerabilities.
+
+## 10. Readability & Simplicity
+-   Write code that is easy to understand and maintain.
+-   Avoid overly complex solutions if simpler alternatives exist (KISS principle - Keep It Simple, Stupid).
+-   Prioritize clarity over brevity.

@@ -1,0 +1,91 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Documentation Writing Standards
+
+## 1. Introduction
+This document provides standards for writing and maintaining project documentation. Clear, concise, and up-to-date documentation is crucial for project understanding, onboarding new members, and long-term maintainability.
+
+## 2. General Principles
+-   **Audience-Aware:** Write for the intended audience (e.g., developers, users, stakeholders).
+-   **Clarity & Conciseness:** Use clear, unambiguous language. Avoid jargon where possible or explain it. Be direct and to the point.
+-   **Accuracy:** Ensure all information is correct and up-to-date.
+-   **Completeness:** Provide enough detail for the audience to understand the subject.
+-   **Consistency:** Use consistent terminology, formatting, and style throughout all documentation.
+-   **Accessibility:** Make documentation easy to find and navigate.
+
+## 3. Types of Documentation
+
+### 3.1. Code Documentation (Docstrings & Comments)
+-   **Purpose:** Explain how the code works, its purpose, parameters, return values, and any assumptions or non-obvious logic.
+-   **Docstrings:**
+    -   Every public module, class, function, and method should have a docstring.
+    -   Follow language-specific conventions (e.g., PEP 257 for Python).
+    -   Include a concise summary line, followed by a more detailed explanation if necessary.
+    -   Document parameters, return values, and any exceptions raised.
+-   **Inline Comments:**
+    -   Use to explain complex algorithms, workarounds, or decisions that aren't obvious from the code itself.
+    -   Keep comments up-to-date with code changes.
+    -   Avoid commenting on obvious code.
+
+### 3.2. README Files
+-   **Project README (`README.md` at the root):**
+    -   Project title and a brief description.
+    -   Prerequisites and installation instructions.
+    -   How to run the project (e.g., scripts, commands).
+    -   How to run tests.
+    -   Project structure overview (briefly).
+    -   Key dependencies.
+    -   Contribution guidelines (or link to `CONTRIBUTING.md`).
+    -   License information.
+-   **Module/Directory READMEs:**
+    -   Provide specific information about a particular module or directory if it's complex or has its own setup/usage instructions.
+
+### 3.3. Technical Design Documents
+-   **Purpose:** Describe the architecture, design choices, and technical details of system components.
+-   **Content may include:**
+    -   Overview and goals.
+    -   System architecture diagrams.
+    -   Data models and schemas.
+    -   API specifications.
+    -   Key algorithms or logic.
+    -   Design rationale and trade-offs.
+
+### 3.4. User Manuals (if applicable)
+-   **Purpose:** Guide end-users on how to use the software or application.
+-   **Content may include:**
+    -   Installation and setup.
+    -   Feature descriptions.
+    -   Step-by-step tutorials.
+    -   Troubleshooting tips.
+    -   FAQ.
+
+### 3.5. API Documentation (if applicable)
+-   **Purpose:** Detail how to interact with the project's APIs.
+-   **Content may include:**
+    -   Endpoints and supported HTTP methods.
+    -   Request and response formats (e.g., JSON schemas).
+    -   Authentication mechanisms.
+    -   Rate limits.
+    -   Error codes.
+    -   Code examples.
+
+## 4. Formatting & Style
+-   **Markdown:** Use Markdown for text-based documentation (e.g., READMEs, design docs).
+-   **Headings & Subheadings:** Use headings to structure documents logically.
+-   **Lists:** Use bulleted or numbered lists for clarity.
+-   **Code Blocks:** Format code examples correctly using fenced code blocks with language identifiers.
+-   **Diagrams:** Use clear and simple diagrams (e.g., flowcharts, architecture diagrams). Store them in a dedicated `docs/images` directory and embed them.
+-   **Links:** Use meaningful link text.
+
+## 5. Versioning & Maintenance
+-   Documentation should be versioned alongside the code.
+-   Update documentation whenever code changes, new features are added, or existing functionality is modified.
+-   Regularly review documentation for accuracy and completeness.
+-   Treat documentation as an integral part of the development process.
+
+## 6. Location
+-   Keep documentation within the project repository, typically in a `docs/` directory or alongside the relevant code (e.g., READMEs).
+-   API documentation might be hosted separately using tools like Swagger/OpenAPI.
