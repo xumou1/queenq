@@ -1,6 +1,19 @@
+# Data files
 data/
+*.csv
+*.xlsx
 *.gexf
 *.gpickle
-**/__pycache__/
+*.html
 
-.cursorrules/
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+
+# IDE
+.vscode/
+.idea/
