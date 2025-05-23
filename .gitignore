@@ -2,3 +2,5 @@ data/
 *.gexf
 *.gpickle
 **/__pycache__/
+
+.cursorrules/
