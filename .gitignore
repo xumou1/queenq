@@ -1,0 +1,4 @@
+data/
+*.gexf
+*.gpickle
+**/__pycache__/
